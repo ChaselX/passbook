@@ -1,6 +1,7 @@
 package com.chasel.passbook.utils;
 
 import com.chasel.passbook.vo.Feedback;
+import com.chasel.passbook.vo.GainPassTemplateRequest;
 import com.chasel.passbook.vo.PassTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -29,6 +30,20 @@ public class RowKeyGenUtil {
         log.info("GenPassTemplateRowKey: {}, {}", passInfo, rowKey);
 
         return rowKey;
+    }
+
+    /**
+     * <h2>根据提供的领取优惠券请求生成 RowKey, 只可以在领取优惠券的时候使用</h2>
+     * Pass RowKey = reversed(userId) + inverse(timestamp) + PassTemplate RowKey
+     *
+     * @param request {@link GainPassTemplateRequest}
+     * @return String RowKey
+     */
+    public static String genPassRowKey(GainPassTemplateRequest request) {
+
+        return new StringBuilder(String.valueOf(request.getUserId())).reverse().toString()
+                + (Long.MAX_VALUE - System.currentTimeMillis())
+                + genPassTemplateRowKey(request.getPassTemplate());
     }
 
     /**
