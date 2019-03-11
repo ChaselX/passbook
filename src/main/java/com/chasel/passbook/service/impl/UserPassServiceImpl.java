@@ -1,10 +1,13 @@
 package com.chasel.passbook.service.impl;
 
 import com.chasel.passbook.constant.Constants;
+import com.chasel.passbook.constant.PassStatus;
 import com.chasel.passbook.dao.MerchantsDao;
 import com.chasel.passbook.entity.Merchants;
+import com.chasel.passbook.mapper.PassRowMapper;
 import com.chasel.passbook.service.IUserPassService;
 import com.chasel.passbook.vo.Pass;
+import com.chasel.passbook.vo.PassInfo;
 import com.chasel.passbook.vo.PassTemplate;
 import com.chasel.passbook.vo.Response;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
@@ -14,6 +17,7 @@ import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +64,64 @@ public class UserPassServiceImpl implements IUserPassService {
     @Override
     public Response userUsePass(Pass pass) {
         return null;
+    }
+
+
+    /**
+     * <h2>根据优惠券状态获取优惠券信息</h2>
+     *
+     * @param userId 用户 id
+     * @param status {@link PassStatus}
+     * @return {@link Response}
+     */
+    private Response getPassInfoByStatus(Long userId, PassStatus status) throws Exception {
+        // 根据 userId 构造行键前缀
+        byte[] rowPrefix = Bytes.toBytes(new StringBuilder(String.valueOf(userId)).reverse().toString());
+        CompareFilter.CompareOp compareOp =
+                status == PassStatus.UNUSED ?
+                        CompareFilter.CompareOp.EQUAL : CompareFilter.CompareOp.NOT_EQUAL;
+        Scan scan = new Scan();
+
+        List<Filter> filters = new ArrayList<>();
+
+        // 1. 行键前缀过滤器, 找到特定用户的优惠券
+        filters.add(new PrefixFilter(rowPrefix));
+
+        if (status != PassStatus.ALL) {
+            filters.add(
+                    new SingleColumnValueFilter(Constants.PassTable.FAMILY_I.getBytes(),
+                            Constants.PassTable.CON_DATE.getBytes(),
+                            compareOp,
+                            Bytes.toBytes("-1"))
+            );
+        }
+
+        scan.setFilter(new FilterList(filters));
+
+        List<Pass> passes = hbaseTemplate.find(Constants.PassTable.TABLE_NAME, scan, new PassRowMapper());
+
+        Map<String, PassTemplate> passTemplateMap = buildPassTemplateMap(passes);
+        Map<Integer, Merchants> merchantsMap = buildMerchantsMap(new ArrayList<>(passTemplateMap.values()));
+
+        List<PassInfo> result = new ArrayList<>();
+
+        for (Pass pass : passes) {
+            PassTemplate passTemplate = passTemplateMap.get(pass.getTemplateId());
+            if (null == passTemplate) {
+                log.error("PassTemplate Null : {}", pass.getTemplateId());
+                continue;
+            }
+
+            Merchants merchants = merchantsMap.get(passTemplate.getId());
+            if (null == merchants) {
+                log.error("Merchants Null : {}", passTemplate.getId());
+                continue;
+            }
+
+            result.add(new PassInfo(pass, passTemplate, merchants));
+        }
+
+        return new Response(result);
     }
 
     /**
