@@ -6,6 +6,7 @@ import com.spring4all.spring.boot.starter.hbase.api.RowMapper;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.springframework.stereotype.Component;
 
 /**
  * <h1>HBase PassTemplate Row To PassTemplate Object</h1>
@@ -13,6 +14,7 @@ import org.apache.hadoop.hbase.util.Bytes;
  * @author XieLongzhen
  * @date 2019/3/7 14:35
  */
+@Component
 public class PassTemplateRowMapper implements RowMapper<PassTemplate> {
 
     private static byte[] FAMILY_B = Constants.PassTemplateTable.FAMILY_B.getBytes();
