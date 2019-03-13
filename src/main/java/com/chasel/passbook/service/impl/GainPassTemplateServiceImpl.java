@@ -1,5 +1,6 @@
 package com.chasel.passbook.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.chasel.passbook.constant.Constants;
 import com.chasel.passbook.mapper.PassTemplateRowMapper;
 import com.chasel.passbook.service.IGainPassTemplateService;
@@ -49,16 +50,52 @@ public class GainPassTemplateServiceImpl implements IGainPassTemplateService {
     @Override
     public Response gainPassTemplate(GainPassTemplateRequest request) throws Exception {
 
-//        PassTemplate passTemplate;
-//
-//        String passTemplateId = RowKeyGenUtil.genPassTemplateRowKey(request.getPassTemplate());
-//
-//        try {
-//            passTemplate = hbaseTemplate.get(Constants.PassTemplateTable.TABLE_NAME,
-//                    passTemplateId,
-//                    passTemplateRowMapper);
-//        }
-        return null;
+        PassTemplate passTemplate;
+
+        String passTemplateId = RowKeyGenUtil.genPassTemplateRowKey(request.getPassTemplate());
+
+        try {
+            passTemplate = hbaseTemplate.get(Constants.PassTemplateTable.TABLE_NAME,
+                    passTemplateId,
+                    passTemplateRowMapper);
+        } catch (Exception ex) {
+            log.error("Gain PassTemplate Error: {}",
+                    JSON.toJSONString(request.getPassTemplate()));
+            return Response.failure("Gain PassTemplate Error!");
+        }
+
+        if (passTemplate.getLimit() <= 1 && passTemplate.getLimit() != -1) {
+            log.error("PassTemplate Limit Max: {}",
+                    JSON.toJSONString(request.getPassTemplate()));
+            return Response.failure("PassTemplate Limit Max!");
+        }
+
+        Date cur = new Date();
+        if (!(cur.getTime() >= passTemplate.getStart().getTime()
+                && cur.getTime() < passTemplate.getEnd().getTime())) {
+            log.error("PassTemplate ValidTime Error: {}",
+                    JSON.toJSONString(request.getPassTemplate()));
+            return Response.failure("PassTemplate ValidTime Error!");
+        }
+
+        // 减去优惠券的 limit
+        if (passTemplate.getLimit() != -1) {
+            List<Mutation> datas = new ArrayList<>();
+            byte[] FAMILY_C = Constants.PassTemplateTable.FAMILY_C.getBytes();
+            byte[] LIMIT = Constants.PassTemplateTable.LIMIT.getBytes();
+            Put put = new Put(Bytes.toBytes(passTemplateId));
+            datas.add(put);
+
+            hbaseTemplate.saveOrUpdates(Constants.PassTemplateTable.TABLE_NAME, datas);
+        }
+
+        // 将优惠券保存到用户优惠券表
+        if (!addPassForUser((request), passTemplate.getId(), passTemplateId)) {
+            // TODO 获取优惠券失败的情况下，当前已获取优惠券会被丢弃，若不能丢弃需要设计回滚的方法
+            return Response.failure("GainPassTemplate Failure!");
+        }
+
+        return Response.success();
     }
 
     /**
