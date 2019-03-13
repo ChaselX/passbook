@@ -76,7 +76,7 @@ public class TokenUploadController {
         return "redirect:/uploadStatus";
     }
 
-    @GetMapping("uploadStatus")
+    @GetMapping("/uploadStatus")
     public String uploadStatus() {
         return "uploadStatus";
     }

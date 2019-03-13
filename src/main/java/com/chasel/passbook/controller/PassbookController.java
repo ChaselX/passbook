@@ -6,6 +6,8 @@ import com.chasel.passbook.service.IFeedbackService;
 import com.chasel.passbook.service.IGainPassTemplateService;
 import com.chasel.passbook.service.IInventoryService;
 import com.chasel.passbook.service.IUserPassService;
+import com.chasel.passbook.vo.Feedback;
+import com.chasel.passbook.vo.GainPassTemplateRequest;
 import com.chasel.passbook.vo.Pass;
 import com.chasel.passbook.vo.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -115,4 +117,67 @@ public class PassbookController {
         return inventoryService.getInventoryInfo(userId);
     }
 
+    /**
+     * <h2>用户领取优惠券</h2>
+     * @param request {@link GainPassTemplateRequest}
+     * @return {@link Response}
+     * */
+    @ResponseBody
+    @PostMapping("/gainpasstemplate")
+    Response gainPassTemplate(@RequestBody GainPassTemplateRequest request)
+            throws Exception {
+        LogGenerator.genLog(
+                httpServletRequest,
+                request.getUserId(),
+                LogConstants.ActionName.GAIN_PASS_TEMPLATE,
+                request
+        );
+        return gainPassTemplateService.gainPassTemplate(request);
+    }
+
+    /**
+     * <h2>用户创建评论</h2>
+     * @param feedback {@link Feedback}
+     * @return {@link Response}
+     * */
+    @ResponseBody
+    @PostMapping("/createfeedback")
+    Response createFeedback(@RequestBody Feedback feedback) {
+
+        LogGenerator.genLog(
+                httpServletRequest,
+                feedback.getUserId(),
+                LogConstants.ActionName.CREATE_FEEDBACK,
+                feedback
+        );
+        return feedbackService.createFeedback(feedback);
+    }
+
+    /**
+     * <h2>用户获取评论信息</h2>
+     * @param userId 用户 id
+     * @return {@link Response}
+     * */
+    @ResponseBody
+    @GetMapping("/getfeedback")
+    Response getFeedback(Long userId) {
+
+        LogGenerator.genLog(
+                httpServletRequest,
+                userId,
+                LogConstants.ActionName.GET_FEEDBACK,
+                null
+        );
+        return feedbackService.getFeedbacks(userId);
+    }
+
+    /**
+     * <h2>异常演示接口</h2>
+     * @return {@link Response}
+     * */
+    @ResponseBody
+    @GetMapping("/exception")
+    Response exception() throws Exception {
+        throw new Exception("Exception Test");
+    }
 }
