@@ -12,12 +12,7 @@ import com.chasel.passbook.vo.Pass;
 import com.chasel.passbook.vo.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,9 +48,10 @@ public class PassbookController {
 
     /**
      * <h2>获取用户个人的优惠券信息</h2>
+     *
      * @param userId 用户 id
      * @return {@link Response}
-     * */
+     */
     @ResponseBody
     @GetMapping("/userpassinfo")
     Response userPassInfo(long userId) throws Exception {
@@ -69,9 +65,10 @@ public class PassbookController {
 
     /**
      * <h2>获取用户使用了的优惠券信息</h2>
+     *
      * @param userId 用户 id
      * @return {@link Response}
-     * */
+     */
     @ResponseBody
     @GetMapping("/userusedpassinfo")
     Response userUsedPassInfo(Long userId) throws Exception {
@@ -84,9 +81,10 @@ public class PassbookController {
 
     /**
      * <h2>用户使用优惠券</h2>
+     *
      * @param pass {@link Pass}
      * @return {@link Response}
-     * */
+     */
     @ResponseBody
     @PostMapping("/userusepass")
     Response userUsePass(@RequestBody Pass pass) {
@@ -119,9 +117,10 @@ public class PassbookController {
 
     /**
      * <h2>用户领取优惠券</h2>
+     *
      * @param request {@link GainPassTemplateRequest}
      * @return {@link Response}
-     * */
+     */
     @ResponseBody
     @PostMapping("/gainpasstemplate")
     Response gainPassTemplate(@RequestBody GainPassTemplateRequest request)
@@ -137,9 +136,10 @@ public class PassbookController {
 
     /**
      * <h2>用户创建评论</h2>
+     *
      * @param feedback {@link Feedback}
      * @return {@link Response}
-     * */
+     */
     @ResponseBody
     @PostMapping("/createfeedback")
     Response createFeedback(@RequestBody Feedback feedback) {
@@ -155,9 +155,10 @@ public class PassbookController {
 
     /**
      * <h2>用户获取评论信息</h2>
+     *
      * @param userId 用户 id
      * @return {@link Response}
-     * */
+     */
     @ResponseBody
     @GetMapping("/getfeedback")
     Response getFeedback(Long userId) {
@@ -173,8 +174,9 @@ public class PassbookController {
 
     /**
      * <h2>异常演示接口</h2>
+     *
      * @return {@link Response}
-     * */
+     */
     @ResponseBody
     @GetMapping("/exception")
     Response exception() throws Exception {
