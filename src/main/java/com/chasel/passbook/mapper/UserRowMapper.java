@@ -5,6 +5,7 @@ import com.chasel.passbook.vo.User;
 import com.spring4all.spring.boot.starter.hbase.api.RowMapper;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.springframework.stereotype.Component;
 
 /**
  * <h1>HBase User Row To User Object</h1>
@@ -12,6 +13,7 @@ import org.apache.hadoop.hbase.util.Bytes;
  * @author XieLongzhen
  * @date 2019/3/7 14:07
  */
+@Component
 public class UserRowMapper implements RowMapper<User> {
 
     private static byte[] FAMILY_B = Constants.UserTable.FAMILY_B.getBytes();

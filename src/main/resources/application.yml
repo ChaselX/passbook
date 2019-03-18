@@ -26,4 +26,4 @@ server:
 logging:
   file: passbook.log
   level:
-    root: debug
+    root: info

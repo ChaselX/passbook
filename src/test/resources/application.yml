@@ -13,8 +13,8 @@ spring:
       concurrency: 4
   data:
     hbase:
-      quorum: 127.0.0.1:2181
-      rootDir: file:///Users/Chasel/Soft/hbase_data/root_dir
+      quorum: 192.168.203.165:2181
+      rootDir: hdfs://test165:9000/hbase
       nodeParent: /hbase
   redis:
     host: 127.0.0.1
