@@ -2,9 +2,9 @@ spring:
   application:
     name: Imooc-Passbook
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/passbook?autoReconnect=true
+    url: jdbc:mysql://127.0.0.1:3306/passbook?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: root
-    password:
+    password: 123456
   kafka:
     bootstrap-servers: 192.168.203.165:9092
     consumer:
@@ -13,8 +13,8 @@ spring:
       concurrency: 4
   data:
     hbase:
-      quorum: 127.0.0.1:2181
-      rootDir: file:///Users/Chasel/Soft/hbase_data/root_dir
+      quorum: 192.168.203.165:2181
+      rootDir: hdfs://test165:9000/hbase
       nodeParent: /hbase
   redis:
     host: 127.0.0.1
