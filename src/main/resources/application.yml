@@ -24,6 +24,6 @@ server:
   port: 9528
 
 logging:
-  file: passbook.log
+  file: ./log/passbook.log
   level:
     root: info
