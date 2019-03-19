@@ -84,6 +84,9 @@ public class GainPassTemplateServiceImpl implements IGainPassTemplateService {
             byte[] FAMILY_C = Constants.PassTemplateTable.FAMILY_C.getBytes();
             byte[] LIMIT = Constants.PassTemplateTable.LIMIT.getBytes();
             Put put = new Put(Bytes.toBytes(passTemplateId));
+            // TODO 线程不安全
+            put.addColumn(FAMILY_C, LIMIT,
+                    Bytes.toBytes(passTemplate.getLimit() - 1));
             datas.add(put);
 
             hbaseTemplate.saveOrUpdates(Constants.PassTemplateTable.TABLE_NAME, datas);

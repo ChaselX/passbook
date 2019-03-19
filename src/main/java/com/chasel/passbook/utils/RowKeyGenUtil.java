@@ -27,7 +27,7 @@ public class RowKeyGenUtil {
         // 使用md5加密做rowKey的原因，HBase集群的数据是基于rowKey做存储，相近的值会存储在一起
         // 因此需要保证rowKey尽可能的分散使数据不会集中于一个节点上，提高查询效率
         String rowKey = DigestUtils.md5Hex(passInfo);
-        log.info("GenPassTemplateRowKey: {}, {}", passInfo, rowKey);
+        log.info("GenPassTemplateRowKey: passInfo: {}, rowKey: {}", passInfo, rowKey);
 
         return rowKey;
     }
