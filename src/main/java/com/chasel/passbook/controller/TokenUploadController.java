@@ -40,6 +40,7 @@ public class TokenUploadController {
         this.redisTemplate = redisTemplate;
     }
 
+    // 3ca315a436333ecd4b763395817a425a
     @GetMapping("/upload")
     public String upload() {
         return "upload";
