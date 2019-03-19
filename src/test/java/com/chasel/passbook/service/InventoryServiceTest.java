@@ -2,6 +2,7 @@ package com.chasel.passbook.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.chasel.passbook.vo.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +24,8 @@ public class InventoryServiceTest extends AbstractServiceTest {
 
     @Test
     public void testGetInventoryInfo() throws Exception {
-        log.info(JSON.toJSONString(inventoryService.getInventoryInfo(userId),
-                SerializerFeature.DisableCircularReferenceDetect));
+        Response response = inventoryService.getInventoryInfo(userId);
+        assert response.getErrorCode() == 0;
+        log.info(JSON.toJSONString(response, SerializerFeature.DisableCircularReferenceDetect));
     }
 }
