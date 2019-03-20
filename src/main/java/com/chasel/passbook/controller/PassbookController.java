@@ -169,7 +169,7 @@ public class PassbookController {
                 LogConstants.ActionName.GET_FEEDBACK,
                 null
         );
-        return feedbackService.getFeedbacks(userId);
+        return feedbackService.getFeedback(userId);
     }
 
     /**

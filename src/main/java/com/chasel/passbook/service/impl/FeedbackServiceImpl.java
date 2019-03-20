@@ -71,7 +71,7 @@ public class FeedbackServiceImpl implements IFeedbackService {
     }
 
     @Override
-    public Response getFeedbacks(Long userId) {
+    public Response getFeedback(Long userId) {
 
         byte[] reverseUserId = new StringBuilder(String.valueOf(userId)).reverse().toString().getBytes();
         Scan scan = new Scan();
