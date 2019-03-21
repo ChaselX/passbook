@@ -1,4 +1,4 @@
-package com.chasel.passbook.advice;
+package com.chasel.passbook.controller;
 
 import com.chasel.passbook.vo.ErrorInfo;
 import org.springframework.web.bind.annotation.ExceptionHandler;
